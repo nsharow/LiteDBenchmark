@@ -9,9 +9,9 @@ namespace LiteDBenchmark.Data
     public TestDataFactory(int hashSize)
     {
       this.hashSize = 
-        (hashSize == 16 || hashSize == 32)
+        hashSize > 0
         ? hashSize
-        : throw new ArgumentException("Hash size should be 16 or 32");
+        : throw new ArgumentException("Hash size should be a positive number");
     }
 
     public TestData Create(int id)
