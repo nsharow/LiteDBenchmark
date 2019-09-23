@@ -1,8 +1,6 @@
-﻿using LiteDBanchmark.Data;
-
-namespace LiteDBenchmark.Data
+﻿namespace LiteDBenchmark.Data
 {
-  internal interface ITestDataFactory
+  public interface ITestDataFactory
   {
     TestData Create(int id);
   }

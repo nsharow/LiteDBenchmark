@@ -1,4 +1,4 @@
-﻿namespace LiteDBanchmark.Data
+﻿namespace LiteDBenchmark.Data
 {
   public sealed class TestData
   {

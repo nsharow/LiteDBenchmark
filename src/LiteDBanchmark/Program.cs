@@ -1,9 +1,6 @@
-﻿using BenchmarkDotNet.Configs;
-using BenchmarkDotNet.Running;
-using LiteDBenchmark.Data;
+﻿using LiteDBenchmark.Data;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Text;
 
 namespace LiteDBenchmark
@@ -20,18 +17,16 @@ namespace LiteDBenchmark
         try
         {
           new TestDBInitializer(cp.InitDbSize, new TestDataFactory(cp.HashSize)).Init();
-          if (Debugger.IsAttached)
-            BenchmarkRunner.Run<Benchmarks.DBenchmark>(new DebugInProcessConfig());
-          else 
-            BenchmarkRunner.Run<Benchmarks.DBenchmark>(new Benchmarks.DBenchmark.Config());
+          using (var bench = new Benchmarks.DBenchmark(new TestDataFactory(cp.HashSize)))
+          {
+            bench.Run();
+          }
         }
         catch (Exception ex)
         {
           Console.WriteLine(ex.ToString());
         }
       }
-      Console.WriteLine("Press any key for exit");
-      Console.ReadKey();
     }
 
     static ( int InitDbSize, int HashSize, bool ShowHelp ) ParseCommandArgs(string[] args)
@@ -75,6 +70,7 @@ namespace LiteDBenchmark
         .AppendLine("\t--dbsize <size>")
         .AppendLine("\t--hashsize <size>")
         .Append("\t--help | /? | ?");
+      Console.WriteLine(sb.ToString());
     }
   }
 }
