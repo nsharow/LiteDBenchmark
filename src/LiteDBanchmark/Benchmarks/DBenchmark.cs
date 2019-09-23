@@ -66,7 +66,7 @@ namespace LiteDBenchmark.Benchmarks
     [Benchmark]
     public TestData SelectByHashFromBegin()
     {
-      var testData = new TestDataFactory(32).Create(1);
+      var testData = new TestDataFactory(42).Create(1);
       return db.GetCollection<TestData>()
         .FindOne(td => td.Hash == testData.Hash)
         ?? throw new InvalidOperationException($"Document #1 is not found");
@@ -76,7 +76,7 @@ namespace LiteDBenchmark.Benchmarks
     public TestData SelectByHashFromMiddle()
     {
       int testId = currentId / 2;
-      var testData = new TestDataFactory(32).Create(testId);
+      var testData = new TestDataFactory(42).Create(testId);
       return db.GetCollection<TestData>()
         .FindOne(td => td.Hash == testData.Hash)
         ?? throw new InvalidOperationException($"Document #{testId} is not found");
@@ -85,7 +85,7 @@ namespace LiteDBenchmark.Benchmarks
     [Benchmark]
     public TestData SelectByHashFromEnd()
     {
-      var testData = new TestDataFactory(32).Create(currentId);
+      var testData = new TestDataFactory(42).Create(currentId);
       return db.GetCollection<TestData>()
         .FindOne(td => td.Hash == testData.Hash)
         ?? throw new InvalidOperationException($"Document #{currentId} is not found");
@@ -99,7 +99,7 @@ namespace LiteDBenchmark.Benchmarks
 
     private IEnumerable<TestData> CreateBatch(int size)
     {
-      var dataFactory = new TestDataFactory(32);
+      var dataFactory = new TestDataFactory(42);
       return Enumerable.Range(1, size)
         .Select(_ => dataFactory.Create(++currentId));
     }

@@ -36,7 +36,7 @@ namespace LiteDBenchmark
 
     static ( int InitDbSize, int HashSize, bool ShowHelp ) ParseCommandArgs(string[] args)
     {
-      var result = (InitDbSize: 20000000, HashSize: 16, ShowHelp: false);
+      var result = (InitDbSize: 30000000, HashSize: 42, ShowHelp: false);
       var it = (args as IEnumerable<string>).GetEnumerator();
       while (it.MoveNext())
       {

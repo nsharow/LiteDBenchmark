@@ -3,6 +3,6 @@
   public sealed class TestData
   {
     public int Id { get; set; }
-    public byte[] Hash { get; set; }
+    public string Hash { get; set; }
   }
 }
