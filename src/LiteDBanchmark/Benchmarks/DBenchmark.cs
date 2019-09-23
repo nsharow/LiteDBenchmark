@@ -14,10 +14,9 @@ using System.Linq;
 
 namespace LiteDBenchmark.Benchmarks
 {
-  [Config(typeof(Config))]
   public class DBenchmark : IDisposable
   {
-    private class Config : ManualConfig
+    public class Config : ManualConfig
     {
       public Config()
       {
@@ -35,15 +34,18 @@ namespace LiteDBenchmark.Benchmarks
 
     public DBenchmark()
     {
-      db = new LiteDatabase($"filename={Constants.TestDbFile}");
-      currentId = db.GetCollection<TestData>().Max()?.AsInt32 ?? 0;
+      db = new LiteDatabase($"filename={BenchConfig.Instance.TestDbFile}");
+      var testCol = db.GetCollection<TestData>();
+      var max = testCol.Max()?.AsInt32 ?? 0;
+      currentId = max;
     }
 
     [Benchmark]
     public void Insert1()
     {
       db.GetCollection<TestData>()
-        .Insert(TestData.Create(++currentId));
+        .Insert(
+        CreateBatch(1));
     }
 
     [Benchmark]
@@ -63,7 +65,7 @@ namespace LiteDBenchmark.Benchmarks
     [Benchmark]
     public TestData SelectByHashFromBegin()
     {
-      var testData = TestData.Create(1);
+      var testData = BenchConfig.Instance.TestDataFactory.Create(1);
       return db.GetCollection<TestData>()
         .FindOne(td => td.Hash == testData.Hash)
         ?? throw new InvalidOperationException($"Document #1 is not found");
@@ -73,7 +75,7 @@ namespace LiteDBenchmark.Benchmarks
     public TestData SelectByHashFromMiddle()
     {
       int testId = currentId / 2;
-      var testData = TestData.Create(testId);
+      var testData = BenchConfig.Instance.TestDataFactory.Create(testId);
       return db.GetCollection<TestData>()
         .FindOne(td => td.Hash == testData.Hash)
         ?? throw new InvalidOperationException($"Document #{testId} is not found");
@@ -82,7 +84,7 @@ namespace LiteDBenchmark.Benchmarks
     [Benchmark]
     public TestData SelectByHashFromEnd()
     {
-      var testData = TestData.Create(currentId);
+      var testData = BenchConfig.Instance.TestDataFactory.Create(currentId);
       return db.GetCollection<TestData>()
         .FindOne(td => td.Hash == testData.Hash)
         ?? throw new InvalidOperationException($"Document #{currentId} is not found");
@@ -97,7 +99,7 @@ namespace LiteDBenchmark.Benchmarks
     private IEnumerable<TestData> CreateBatch(int size)
     {
       return Enumerable.Range(1, size)
-        .Select(_ => TestData.Create(++currentId));
+        .Select(_ => BenchConfig.Instance.TestDataFactory.Create(++currentId));
     }
   }
 }

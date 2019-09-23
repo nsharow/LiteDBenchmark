@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "LiteDBenchmark": {
+      "commandName": "Project",
+      "commandLineArgs": "--dbsize 300000 --hashsize 16"
+    }
+  }
+}
