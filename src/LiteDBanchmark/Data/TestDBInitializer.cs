@@ -18,24 +18,23 @@ namespace LiteDBenchmark.Data
 
     public void Init()
     {
-      Console.WriteLine("{0} Database initialization start...", DateTime.Now);
+      Console.WriteLine("{0} Database initialization started", DateTime.Now);
       using (var db = new LiteDatabase($"filename={Constants.TestDbFile}; journal=false"))
       {
         var testCol = db.GetCollection<TestData>();
         testCol.EnsureIndex("Hash", true);
         currentId = testCol.Count() > 0
           ? testCol.Max().AsInt32 : 0;
-        Console.WriteLine();
         while (currentId < totalSize)
         {
           int batchSize = (totalSize - currentId) >= Constants.BatchSize
             ? Constants.BatchSize : (totalSize - currentId);
           var batch = CreateBatch(batchSize).ToArray();
           testCol.Insert(batch);
-          Console.Write($"\x000D{currentId} records from {totalSize} created");
+          Console.Write($"\x000D{currentId} documents from {totalSize} are created");
         }
       }
-      Console.WriteLine("{0} Database initialization finish", DateTime.Now);
+      Console.WriteLine("\n{0} Database initialization finished. Total documents: {1}", DateTime.Now, currentId);
     }
 
     private IEnumerable<TestData> CreateBatch(int size)

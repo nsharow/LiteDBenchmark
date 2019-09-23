@@ -1,4 +1,11 @@
-﻿using BenchmarkDotNet.Attributes;
+﻿using BenchmarkDotNet.Analysers;
+using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Columns;
+using BenchmarkDotNet.Configs;
+using BenchmarkDotNet.Exporters;
+using BenchmarkDotNet.Exporters.Csv;
+using BenchmarkDotNet.Jobs;
+using BenchmarkDotNet.Loggers;
 using LiteDB;
 using LiteDBanchmark.Data;
 using System;
@@ -7,14 +14,29 @@ using System.Linq;
 
 namespace LiteDBenchmark.Benchmarks
 {
+  [Config(typeof(Config))]
   public class DBenchmark : IDisposable
   {
+    private class Config : ManualConfig
+    {
+      public Config()
+      {
+        Add(Job.Dry);
+        Add(ConsoleLogger.Default);
+        Add(TargetMethodColumn.Method, StatisticColumn.Min, StatisticColumn.Median, StatisticColumn.Max);
+        Add(RPlotExporter.Default, CsvExporter.Default);
+        Add(EnvironmentAnalyser.Default);
+        UnionRule = ConfigUnionRule.AlwaysUseLocal;
+      }
+    }
+
     private int currentId;
     private LiteDatabase db;
 
     public DBenchmark()
     {
       db = new LiteDatabase($"filename={Constants.TestDbFile}");
+      currentId = db.GetCollection<TestData>().Max()?.AsInt32 ?? 0;
     }
 
     [Benchmark]
