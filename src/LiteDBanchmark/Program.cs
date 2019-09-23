@@ -19,8 +19,7 @@ namespace LiteDBenchmark
       {
         try
         {
-          BenchConfig.Init(new TestDataFactory(cp.HashSize));
-          new Data.TestDBInitializer(cp.InitDbSize, BenchConfig.Instance.TestDataFactory).Init();
+          new TestDBInitializer(cp.InitDbSize, new TestDataFactory(cp.HashSize)).Init();
           if (Debugger.IsAttached)
             BenchmarkRunner.Run<Benchmarks.DBenchmark>(new DebugInProcessConfig());
           else 

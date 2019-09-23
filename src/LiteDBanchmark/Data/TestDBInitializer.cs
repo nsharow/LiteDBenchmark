@@ -21,7 +21,7 @@ namespace LiteDBenchmark.Data
     public void Init()
     {
       Console.WriteLine("{0} Database initialization started", DateTime.Now);
-      using (var db = new LiteDatabase($"filename={BenchConfig.Instance.TestDbFile}; journal=false"))
+      using (var db = new LiteDatabase($"filename={BenchConfig.TestDbFile}; journal=false"))
       {
         var testCol = db.GetCollection<TestData>();
         testCol.EnsureIndex("Hash", true);
@@ -30,8 +30,8 @@ namespace LiteDBenchmark.Data
           ? testCol.Max().AsInt32 : 0;
         while (currentId < totalSize)
         {
-          int batchSize = (totalSize - currentId) >= BenchConfig.Instance.BatchSize
-            ? BenchConfig.Instance.BatchSize : (totalSize - currentId);
+          int batchSize = (totalSize - currentId) >= BenchConfig.BatchSize
+            ? BenchConfig.BatchSize : (totalSize - currentId);
           var batch = CreateBatch(batchSize).ToArray();
           testCol.Insert(batch);
           Console.Write($"\x000D{currentId} documents from {totalSize} has been created");
