@@ -75,7 +75,6 @@ namespace LiteDBenchmark
         .AppendLine("\t--dbsize <size>")
         .AppendLine("\t--hashsize <size>")
         .Append("\t--help | /? | ?");
-      Console.WriteLine(sb.ToString());
     }
   }
 }
