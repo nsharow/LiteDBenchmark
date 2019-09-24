@@ -37,8 +37,8 @@ namespace LiteDBenchmark.Data
       }
       return new TestData()
       {
-        Id = id,
-        Hash = sb.ToString()
+        Id = sb.ToString(),
+        Data = "Some data"
       };
     }
 }

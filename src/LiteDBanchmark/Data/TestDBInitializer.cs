@@ -23,10 +23,9 @@ namespace LiteDBenchmark.Data
       using (var db = new LiteDatabase($"filename={BenchConfig.TestDbFile}; journal=false"))
       {
         var testCol = db.GetCollection<TestData>();
-        testCol.EnsureIndex("Hash", true);
-        var max = testCol.Max();
-        currentId = testCol.Count() > 0
-          ? testCol.Max().AsInt32 : 0;
+//        testCol.EnsureIndex("Hash", true);
+        var max = testCol.Count();
+        currentId = max;
         while (currentId < totalSize)
         {
           int batchSize = (totalSize - currentId) >= BenchConfig.BatchSize
@@ -42,7 +41,7 @@ namespace LiteDBenchmark.Data
     private IEnumerable<TestData> CreateBatch(int size)
     {
       return Enumerable.Range(1, size)
-        .Select(_ => testFactory.Create(++currentId));
+        .Select(_ => testFactory.Create(++currentId)).OrderBy(td => td.Id);
     }
   }
 }

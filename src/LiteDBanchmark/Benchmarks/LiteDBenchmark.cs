@@ -7,22 +7,22 @@ using System.Linq;
 
 namespace LiteDBenchmark.Benchmarks
 {
-  public class DBenchmark : IDisposable
+  public class LiteDBenchmark : IDisposable
   {
     private int currentId;
     private LiteDatabase db;
     private readonly ITestDataFactory dataFactory;
 
-    public DBenchmark(ITestDataFactory testDataFactory)
+    public LiteDBenchmark(ITestDataFactory testDataFactory)
     {
       db = new LiteDatabase($"filename={BenchConfig.TestDbFile}");
       var testCol = db.GetCollection<TestData>();
-      var max = testCol.Max()?.AsInt32 ?? 0;
+      var max = testCol.Count();
       currentId = max;
       dataFactory = testDataFactory;
     }
 
-    ~DBenchmark()
+    ~LiteDBenchmark()
     {
       Dispose();
     }
@@ -76,9 +76,9 @@ namespace LiteDBenchmark.Benchmarks
     {
       var testData = dataFactory.Create(1);
       var resultData = db.GetCollection<TestData>()
-        .FindOne(td => td.Hash == testData.Hash)
+        .FindById(testData.Id)
         ?? throw new InvalidOperationException($"Document #1 is not found");
-      if (resultData.Id != 1)
+      if (resultData.Id != testData.Id)
         throw new InvalidOperationException($"Document #1 is wrong");
     }
 
@@ -87,9 +87,9 @@ namespace LiteDBenchmark.Benchmarks
       int testId = currentId / 2;
       var testData = dataFactory.Create(testId);
       var resultData = db.GetCollection<TestData>()
-        .FindOne(td => td.Hash == testData.Hash)
+        .FindById(testData.Id)
         ?? throw new InvalidOperationException($"Document #{testId} is not found");
-      if (resultData.Id != testId)
+      if (resultData.Id != testData.Id)
         throw new InvalidOperationException($"Document #{testId} is wrong");
     }
 
@@ -97,9 +97,9 @@ namespace LiteDBenchmark.Benchmarks
     {
       var testData = dataFactory.Create(currentId);
       var resultData = db.GetCollection<TestData>()
-        .FindOne(td => td.Hash == testData.Hash)
+        .FindById(testData.Id)
         ?? throw new InvalidOperationException($"Document #{currentId} is not found");
-      if (resultData.Id != currentId)
+      if (resultData.Id != testData.Id)
         throw new InvalidOperationException($"Document #{currentId} is wrong");
     }
 

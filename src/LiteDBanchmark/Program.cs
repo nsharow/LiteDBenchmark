@@ -16,8 +16,8 @@ namespace LiteDBenchmark
       {
         try
         {
-          new TestDBInitializer(cp.InitDbSize, new TestDataFactory(cp.HashSize)).Init();
-          using (var bench = new Benchmarks.DBenchmark(new TestDataFactory(cp.HashSize)))
+          new KVDBInitializer(cp.InitDbSize, new TestDataFactory(cp.HashSize)).Init();
+          using (var bench = new Benchmarks.KVDBenchmark(new TestDataFactory(cp.HashSize)))
           {
             bench.Run();
           }
